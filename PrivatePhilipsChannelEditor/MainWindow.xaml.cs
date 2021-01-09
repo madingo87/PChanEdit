@@ -14,13 +14,10 @@ namespace PrivatePhilipsChannelEditor
 {
     public partial class MainWindow : Window
     {
-
         List<ChannelData> _channelList;
         string _channelFile;
         string _imagesFolder;
         string _dummyImagePath = Environment.CurrentDirectory+@"\dummy.png";
-        string _workingDir;
-
 
         public MainWindow()
         {
@@ -35,80 +32,95 @@ namespace PrivatePhilipsChannelEditor
             MainBox.Items.Clear();
             _channelList.Clear();
 
-            var rootFolder = new Environment.SpecialFolder();
-            rootFolder = Environment.SpecialFolder.DesktopDirectory;
-
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
                 Description = "Bitte das 'ChannelMap' Verzeichnis wählen...",
-                RootFolder = rootFolder //(@"C:\Users\martin\Desktop\philips_channels");
+                SelectedPath = Environment.SpecialFolder.DesktopDirectory.ToString() //
             };
 
             fbd.ShowDialog();
-            //fbd.SelectedPath = @"C:\Users\martin\Desktop\philips_channels\PhilipsChannelMaps\ChannelMap_100";
+            //fbd.SelectedPath = @"C:\Users\martin\Workspace\data\PhilipsChannelMaps\ChannelMap_100";
 
             if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
-            { 
+            {
+
                 _channelFile = fbd.SelectedPath + @"\ChannelList\channellib\DVBC.xml";
-                _imagesFolder = fbd.SelectedPath + @"\syslogo\sys";                
-                _workingDir = fbd.SelectedPath;
+                _imagesFolder = fbd.SelectedPath + @"\syslogo\sys";
 
-                XmlReader xmlRdr = XmlReader.Create(_channelFile);
-                xmlRdr.MoveToContent();
-                ChannelData currentChannel = new ChannelData();
+                XmlReader xmlRdr;
 
-                while (xmlRdr.Read())
+                try
                 {
-                    // Only detect start elements.
-                    if (xmlRdr.IsStartElement())
-                    {
-                        // Get element name and switch on it.
-                        switch (xmlRdr.Name)
-                        {
-                            case "Channel":
-                                // Log "begin new Channel"
-                                currentChannel = new ChannelData();
-                                break;
-                            case "Setup":
-                                // Log "begin new Channel"
-                                currentChannel.ChannelNumber = xmlRdr["ChannelNumber"];
-                                currentChannel.ChannelName = xmlRdr["ChannelName"];
-                                currentChannel.ChannelLock = xmlRdr["ChannelLock"];
-                                currentChannel.UserModifiedName = xmlRdr["UserModifiedName"];
-                                currentChannel.LogoID = xmlRdr["LogoID"];
-                                currentChannel.LogoLock = xmlRdr["LogoLock"];
-                                currentChannel.UserModifiedLogo = xmlRdr["UserModifiedLogo"];
-                                currentChannel.FavoriteNumber = xmlRdr["FavoriteNumber"];
-                                currentChannel.UserHidden = xmlRdr["UserHidden"];
-                                break;
-                            case "Broadcast":
-                                // Log "begin new Channel"
-                                currentChannel.ChannelType = xmlRdr["ChannelType"];
-                                currentChannel.Onid = xmlRdr["Onid"];
-                                currentChannel.Tsid = xmlRdr["Tsid"];
-                                currentChannel.Sid = xmlRdr["Sid"];
-                                currentChannel.Frequency = xmlRdr["Frequency"];
-                                currentChannel.Modulation = xmlRdr["Modulation"];
-                                currentChannel.ServiceType = xmlRdr["ServiceType"];
-                                currentChannel.Bandwidth = xmlRdr["Bandwidth"];
-                                currentChannel.SymbolRate = xmlRdr["SymbolRate"];
-                                currentChannel.DecoderType = xmlRdr["DecoderType"];
-                                currentChannel.NetworkID = xmlRdr["NetworkID"];
-                                currentChannel.StreamPriority = xmlRdr["StreamPriority"];
-                                currentChannel.SystemHidden = xmlRdr["SystemHidden"];
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (xmlRdr.Name == "Channel")
-                            _channelList.Add(currentChannel);
-                    }
+                    xmlRdr = XmlReader.Create(_channelFile);
+                }
+                catch (Exception ex) {
+                    Helper.ShowError(ex, "Error Creating XmlReader");
+                    throw;
                 }
 
-                xmlRdr.Close();
+                try
+                {
+                    xmlRdr.MoveToContent();
+                    ChannelData currentChannel = new ChannelData();
 
-                UpdateMainBox();
+                    while (xmlRdr.Read())
+                    {
+                        // Only detect start elements.
+                        if (xmlRdr.IsStartElement())
+                        {
+                            // Get element name and switch on it.
+                            switch (xmlRdr.Name)
+                            {
+                                case "Channel":
+                                    // Log "begin new Channel"
+                                    currentChannel = new ChannelData();
+                                    break;
+                                case "Setup":
+                                    // Log "begin new Channel"
+                                    currentChannel.ChannelNumber = xmlRdr["ChannelNumber"];
+                                    currentChannel.ChannelName = xmlRdr["ChannelName"];
+                                    currentChannel.ChannelLock = xmlRdr["ChannelLock"];
+                                    currentChannel.UserModifiedName = xmlRdr["UserModifiedName"];
+                                    currentChannel.LogoID = xmlRdr["LogoID"];
+                                    currentChannel.LogoLock = xmlRdr["LogoLock"];
+                                    currentChannel.UserModifiedLogo = xmlRdr["UserModifiedLogo"];
+                                    currentChannel.FavoriteNumber = xmlRdr["FavoriteNumber"];
+                                    currentChannel.UserHidden = xmlRdr["UserHidden"];
+                                    break;
+                                case "Broadcast":
+                                    // Log "begin new Channel"
+                                    currentChannel.ChannelType = xmlRdr["ChannelType"];
+                                    currentChannel.Onid = xmlRdr["Onid"];
+                                    currentChannel.Tsid = xmlRdr["Tsid"];
+                                    currentChannel.Sid = xmlRdr["Sid"];
+                                    currentChannel.Frequency = xmlRdr["Frequency"];
+                                    currentChannel.Modulation = xmlRdr["Modulation"];
+                                    currentChannel.ServiceType = xmlRdr["ServiceType"];
+                                    currentChannel.Bandwidth = xmlRdr["Bandwidth"];
+                                    currentChannel.SymbolRate = xmlRdr["SymbolRate"];
+                                    currentChannel.DecoderType = xmlRdr["DecoderType"];
+                                    currentChannel.NetworkID = xmlRdr["NetworkID"];
+                                    currentChannel.StreamPriority = xmlRdr["StreamPriority"];
+                                    currentChannel.SystemHidden = xmlRdr["SystemHidden"];
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (xmlRdr.Name == "Channel")
+                                _channelList.Add(currentChannel);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Helper.ShowError(ex, "Error while reading xml file");
+                    xmlRdr.Close();
+                }
+                finally {
+                    xmlRdr.Close();
+                    MainBox.UpdateMainBox(_channelList);
+                }
             }           
         }
 
@@ -167,23 +179,6 @@ namespace PrivatePhilipsChannelEditor
             xmlWrt.Close();
         }
 
-        private string ConvertHexChannelNameToString(string hex)
-        {
-            hex = hex.Replace("0x00","");
-            hex = hex.Replace("0x", "");
-
-            var hexLetters = hex.Split(' ');
-            var letters = new List<char>();
-
-            foreach (var letter in hexLetters)
-            {
-                if (!string.IsNullOrWhiteSpace(letter))
-                    letters.Add(Convert.ToChar(Convert.ToUInt32(letter, 16)));
-            }              
-
-            return new string(letters.ToArray());
-        }
-
         private void MainBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (MainBox.SelectedIndex >= 0)
@@ -218,7 +213,7 @@ namespace PrivatePhilipsChannelEditor
                 _channelList[MainBox.SelectedIndex - 1] = selected;
 
                 MainBox.SelectedIndex--;
-                UpdateMainBox();
+                MainBox.UpdateMainBox(_channelList);
             }
         }
 
@@ -232,7 +227,7 @@ namespace PrivatePhilipsChannelEditor
                 _channelList[MainBox.SelectedIndex] = next;
                 _channelList[MainBox.SelectedIndex + 1] = selected;
                 MainBox.SelectedIndex++;
-                UpdateMainBox();
+                MainBox.UpdateMainBox(_channelList);
             }
         }
 
@@ -241,27 +236,12 @@ namespace PrivatePhilipsChannelEditor
             try
             {
                 _channelList.Remove(_channelList[MainBox.SelectedIndex]);
-                UpdateMainBox();
+                MainBox.UpdateMainBox(_channelList);
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show("Kein/Falscher Index! \n("+ex.Message+")");
             }
-        }
-
-        private void UpdateMainBox()
-        {
-            var lastSelectedIndex = MainBox.SelectedIndex;
-            MainBox.Items.Clear();
-
-            var index = 1;
-            foreach (var channel in _channelList)
-                MainBox.Items.Add(string.Format("{0:000} | {1}", index++, ConvertHexChannelNameToString(channel.ChannelName)));
-
-            if (lastSelectedIndex > _channelList.Count)
-                MainBox.SelectedIndex = lastSelectedIndex - 1;
-            else
-                MainBox.SelectedIndex = lastSelectedIndex;
         }
 
         private void Postion_Click(object sender, RoutedEventArgs e)
@@ -276,8 +256,8 @@ namespace PrivatePhilipsChannelEditor
 
                     _channelList.Remove(selected);
                     _channelList.Insert(pos, selected);
-                    
-                    UpdateMainBox();
+
+                    MainBox.UpdateMainBox(_channelList);
                 }
             }
         }
@@ -359,34 +339,5 @@ namespace PrivatePhilipsChannelEditor
                 dbConn.Close();
             }
         }
-    }
-
-    struct ChannelData {
-
-        //Setup
-        public string ChannelNumber; //= "1118" 
-        public string ChannelName; //="0x54 0x00 0x65 0x00 0x73 0x00 0x74 0x00 0x73 0x00 0x65 0x00 0x6E 0x00 0x64 0x00 0x65 0x00 0x72 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00" 
-        public string ChannelLock; //="0" 
-        public string UserModifiedName; //="1" 
-        public string LogoID; //="0" 
-        public string UserModifiedLogo; //= "0"
-        public string LogoLock; // ="0"
-        public string UserHidden; // ="0"
-        public string FavoriteNumber; // ="0"
-
-        //Broadcast
-        public string ChannelType; // = "3"
-        public string Onid; // ="61441"
-        public string Tsid; // ="10000"
-        public string Sid; // ="428"
-        public string Frequency; // ="122"
-        public string Modulation; // ="64"
-        public string ServiceType; // ="2"
-        public string Bandwidth; // ="8" 
-        public string SymbolRate; // ="6900000"
-        public string DecoderType; // ="2" 
-        public string NetworkID; // ="61448"
-        public string StreamPriority; // ="0" 
-        public string SystemHidden; // ="0"
     }
 }
