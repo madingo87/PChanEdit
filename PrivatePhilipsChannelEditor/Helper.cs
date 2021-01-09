@@ -6,23 +6,6 @@ namespace PrivatePhilipsChannelEditor
 {
     public static class Helper
     {
-        private static string ConvertHexChannelNameToString(string hex)
-        {
-            hex = hex.Replace("0x00","");
-            hex = hex.Replace("0x", "");
-
-            var hexLetters = hex.Split(' ');
-            var letters = new List<char>();
-
-            foreach (var letter in hexLetters)
-            {
-                if (!string.IsNullOrWhiteSpace(letter))
-                    letters.Add(Convert.ToChar(Convert.ToUInt32(letter, 16)));
-            }              
-
-            return new string(letters.ToArray());
-        }
-
         public static void UpdateMainBox(this System.Windows.Controls.ListBox mainBox, IList<ChannelData> channelList)
         {
             var lastSelectedIndex = mainBox.SelectedIndex;
@@ -40,6 +23,23 @@ namespace PrivatePhilipsChannelEditor
 
         public static void ShowError(Exception ex, string message) {
             System.Windows.MessageBox.Show($"An Error occured!\r\n{message}\r\n\r\n{ex.Message}");
+        }
+
+        private static string ConvertHexChannelNameToString(string hex)
+        {
+            hex = hex.Replace("0x00", "");
+            hex = hex.Replace("0x", "");
+
+            var hexLetters = hex.Split(' ');
+            var letters = new List<char>();
+
+            foreach (var letter in hexLetters)
+            {
+                if (!string.IsNullOrWhiteSpace(letter))
+                    letters.Add(Convert.ToChar(Convert.ToUInt32(letter, 16)));
+            }
+
+            return new string(letters.ToArray());
         }
     }
 }

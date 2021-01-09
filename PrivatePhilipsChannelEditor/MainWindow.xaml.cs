@@ -34,8 +34,8 @@ namespace PrivatePhilipsChannelEditor
 
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
-                Description = "Bitte das 'ChannelMap' Verzeichnis wählen...",
-                SelectedPath = Environment.SpecialFolder.DesktopDirectory.ToString() //
+                Description = "Please choose the 'ChannelMap_' directory ...",
+                SelectedPath = Environment.SpecialFolder.DesktopDirectory.ToString()
             };
 
             fbd.ShowDialog();
@@ -55,7 +55,7 @@ namespace PrivatePhilipsChannelEditor
                 }
                 catch (Exception ex) {
                     Helper.ShowError(ex, "Error Creating XmlReader");
-                    throw;
+                    return;
                 }
 
                 try
@@ -191,7 +191,7 @@ namespace PrivatePhilipsChannelEditor
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("Bild nicht gefunden! Ggf Datenbank nicht extrahiert? \n(" + ex.Message + ")");
+                    Helper.ShowError(ex, "Image not found! Make sure to have the images 'syslogo.tar' extracted");
                 }
 
                 DetailView.Items.Clear();
@@ -240,7 +240,7 @@ namespace PrivatePhilipsChannelEditor
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Kein/Falscher Index! \n("+ex.Message+")");
+                Helper.ShowError(ex, "No Index found!");
             }
         }
 
