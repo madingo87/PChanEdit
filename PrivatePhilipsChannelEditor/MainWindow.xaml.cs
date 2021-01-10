@@ -31,6 +31,7 @@ namespace PrivatePhilipsChannelEditor
         {
             MainBox.Items.Clear();
             _channelList.Clear();
+            
 
             FolderBrowserDialog fbd = new FolderBrowserDialog
             {
@@ -289,7 +290,7 @@ namespace PrivatePhilipsChannelEditor
                 }
             }
 
-            var str = System.Text.Encoding.UTF7.GetString(bytes);
+            var str = System.Text.Encoding.UTF8.GetString(bytes);
             System.Windows.MessageBox.Show(str);
         }
 
