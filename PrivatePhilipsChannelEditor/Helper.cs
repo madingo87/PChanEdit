@@ -21,8 +21,14 @@ namespace PrivatePhilipsChannelEditor
                 mainBox.SelectedIndex = lastSelectedIndex;
         }
 
-        public static void ShowError(Exception ex, string message) {
+        public static void ShowError(Exception ex, string message) 
+        {
             System.Windows.MessageBox.Show($"An Error occured!\r\n{message}\r\n\r\n{ex.Message}");
+        }
+
+        public static void ShowWarning(string message)
+        {
+            System.Windows.MessageBox.Show($"An Error occured!\r\n{message}");
         }
 
         private static string ConvertHexChannelNameToString(string hex)

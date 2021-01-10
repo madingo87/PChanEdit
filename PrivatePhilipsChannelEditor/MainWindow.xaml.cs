@@ -38,14 +38,19 @@ namespace PrivatePhilipsChannelEditor
                 SelectedPath = Environment.SpecialFolder.DesktopDirectory.ToString()
             };
 
-            fbd.ShowDialog();
             //fbd.SelectedPath = @"C:\Users\martin\Workspace\data\PhilipsChannelMaps\ChannelMap_100";
 
-            if (!string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
             {
 
                 _channelFile = fbd.SelectedPath + @"\ChannelList\channellib\DVBC.xml";
                 _imagesFolder = fbd.SelectedPath + @"\syslogo\sys";
+
+                if (!File.Exists(_channelFile)) 
+                {
+                    Helper.ShowWarning($"Could not find DVBC file in path {_channelFile}");
+                    return;
+                }
 
                 XmlReader xmlRdr;
 
