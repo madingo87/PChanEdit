@@ -3,26 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PrivatePhilipsChannelEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="650">
+        Title="Private Philips Channel Editor" Height="670" Width="600">
     <Grid>
         <Menu Height="20" VerticalAlignment="Top" >
-            <MenuItem Header="Open" Name="Open" Margin="0,0,0,0" Click="Open_Click"/>
-            <MenuItem Header="Save" Name="Save" Margin="10,0,0,0" Click="Save_Click"/>
-            <MenuItem Header="Exit" Name="Exit" Margin="10,0,0,0" Click="Exit_Click"/>
-            <MenuItem Header="Clear Images" Name="ClearImagesAndDb" Margin="10,0,0,0" Click="ClearImages_Click"/>
-            <MenuItem Header="BinaryReader" Name="ReadBinary" Margin="10,0,0,0" Click="ReadBinary_Click" IsEnabled="False"/>
+            <MenuItem Header="File">
+                <MenuItem Header="Open" Name="Open" Margin="10,0,0,0" Click="Open_Click"/>
+                <MenuItem Header="Save" Name="Save" Margin="10,0,0,0" Click="Save_Click"/>
+                <Separator/>
+                <MenuItem Header="Exit" Name="Exit" Margin="10,0,0,0" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Clear Images" Name="ClearImagesAndDb" Margin="10,0,0,0" Click="ClearImages_Click"/>
+                <MenuItem Header="BinaryReader" Name="ReadBinary" Margin="10,0,0,0" Click="ReadBinary_Click" IsEnabled="True"/>
+            </MenuItem>
+            <MenuItem Header="Info" Click="ShowInformation_Click"></MenuItem>
         </Menu>
-        <ListBox Name="MainBox" Margin="10,30,170,10" SelectionChanged="MainBox_SelectionChanged" FontSize="14" FontFamily="Arial"/>
-        <Image Name="ImageView" HorizontalAlignment="Right" Height="150" Margin="0,30,10,0" VerticalAlignment="Top" Width="150"/>
-        
-        <Button Name="Up" Content="+" Height="20" Width="20" Margin="0,185,140,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Up_Click"/>
-        <Button Name="Down" Content="-" Height="20" Width="20" Margin="0,185,115,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Down_Click"/>
-        <Button Name="Delete" Content="X" Height="20" Width="20" Margin="0,185,90,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Delete_Click"/>
-        <TextBox Name="PositionText" HorizontalAlignment="Right" Height="20" Margin="0,185,40,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
-        <Button Name="PositionBtn" Content="ok" Height="20" Width="20" Margin="0,185,15,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Postion_Click"/>
-        
-        <ListView Name="DetailView" HorizontalAlignment="Right" Margin="0,220,10,10" Width="150" />
+        <ListBox Name="MainBox" Margin="10,30,220,10" SelectionChanged="MainBox_SelectionChanged" FontSize="14" FontFamily="Arial"/>
+        <Image Name="ImageView" HorizontalAlignment="Right" Height="150" Margin="0,30,55,0" VerticalAlignment="Top" Width="150" />
+
+        <Button Name="Up" Content="Move up" Height="20" Width="80" Margin="0,195,120,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Up_Click"/>
+        <Button Name="Down" Content="Move down" Height="20" Width="80" Margin="0,195,35,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Down_Click"/>
+        <Button Name="Delete" Content="Delete Channel" Height="20" Width="102" Margin="0,262,98,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Delete_Click"/>
+        <TextBox Name="PositionText" HorizontalAlignment="Right" Height="20" Margin="0,220,160,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" />
+        <Button Name="PositionBtn" Content="Move to position" Height="20" Width="120" Margin="0,220,35,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="Postion_Click"/>
+
+        <ListView Name="DetailView" HorizontalAlignment="Right" Margin="0,313,10,10" Width="193" />
     </Grid>
 </Window>

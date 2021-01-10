@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System;
+using System.Windows.Forms;
 
 namespace PrivatePhilipsChannelEditor
 {
@@ -23,12 +24,21 @@ namespace PrivatePhilipsChannelEditor
 
         public static void ShowError(Exception ex, string message) 
         {
-            System.Windows.MessageBox.Show($"An Error occured!\r\n{message}\r\n\r\n{ex.Message}");
+            MessageBox.Show($"An Error occured!\r\n{message}\r\n\r\n{ex.Message}");
         }
 
         public static void ShowWarning(string message)
         {
-            System.Windows.MessageBox.Show($"An Error occured!\r\n{message}");
+            MessageBox.Show($"An Error occured!\r\n{message}");
+        }
+
+        public static DialogResult PromtInformation(string message)
+        {
+            return MessageBox.Show(
+                    message,
+                    "Info",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Information);
         }
 
         private static string ConvertHexChannelNameToString(string hex)

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Xml;
 using System.Linq;
-using System.Windows.Forms;
 using System;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Data.SQLite;
+using System.Windows.Forms;
 
 namespace PrivatePhilipsChannelEditor
 {
@@ -201,9 +201,9 @@ namespace PrivatePhilipsChannelEditor
                 }
 
                 DetailView.Items.Clear();
-                DetailView.Items.Add("Channel Number:\t" + selectedChannel.ChannelNumber);
-                DetailView.Items.Add("Favorite Number:\t" + selectedChannel.FavoriteNumber);
-                DetailView.Items.Add("Frequency:\t" + selectedChannel.Frequency);
+                DetailView.Items.Add("Channel Number:\t\t" + selectedChannel.ChannelNumber);
+                DetailView.Items.Add("Favorite Number:\t\t" + selectedChannel.FavoriteNumber);
+                DetailView.Items.Add("Frequency:\t\t" + selectedChannel.Frequency);
                 DetailView.Items.Add("UserModifiedName:\t" + selectedChannel.UserModifiedName);
             }
         }
@@ -270,28 +270,30 @@ namespace PrivatePhilipsChannelEditor
 
         private void ReadBinary_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog fd = new OpenFileDialog();
-            fd.InitialDirectory = @"C:\Users\martin\Desktop\philips_channels\PhilipsChannelMaps\ChannelMap_100\ChannelList";
+            var promtResult = Helper.PromtInformation("This reads the binary files in the 'ChannelMap_100\\ChannelList' directory");
 
-            fd.ShowDialog();
+            var fileDialog = new OpenFileDialog();
+            fileDialog.InitialDirectory = @"C:\Users\martin\Workspace\data\PhilipsChannelMaps\ChannelMap_100\ChannelList";
 
-            int maxLength = 10000;
-            byte[] bytes = new byte[maxLength];
-            using (BinaryReader binaryReader = new BinaryReader(new FileStream(fd.FileName, FileMode.Open)))
+            if (promtResult == System.Windows.Forms.DialogResult.OK && fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                int i = 0;
-
-                while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+                int maxLength = 10000;
+                byte[] bytes = new byte[maxLength];
+                using (BinaryReader binaryReader = new BinaryReader(new FileStream(fileDialog.FileName, FileMode.Open)))
                 {
-                    if (i < maxLength)
-                        bytes[i++] = binaryReader.ReadByte();
-                    else
-                        break;
+                    int i = 0;
+                    while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
+                    {
+                        if (i < maxLength)
+                            bytes[i++] = binaryReader.ReadByte();
+                        else
+                            break;
+                    }
                 }
-            }
 
-            var str = System.Text.Encoding.UTF8.GetString(bytes);
-            System.Windows.MessageBox.Show(str);
+                var str = System.Text.Encoding.UTF8.GetString(bytes);
+                System.Windows.MessageBox.Show(str);
+            }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
@@ -301,7 +303,9 @@ namespace PrivatePhilipsChannelEditor
 
         private void ClearImages_Click(object sender, RoutedEventArgs e)
         {
-            if (_channelList.Count != 0)
+            var promtResult = Helper.PromtInformation("This removes all unused images of the channel's logoTable");
+
+            if (promtResult == System.Windows.Forms.DialogResult.OK && _channelList.Count != 0)
             {
                 var fileCounter = 0;
                 var affectedCounter = 0;
@@ -315,7 +319,7 @@ namespace PrivatePhilipsChannelEditor
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("Verbindung zur Bild DB nicht möglich! Ggf Datenbank nicht extrahiert? \n(" + ex.Message + ")");
+                    Helper.ShowError(ex, "Could not connect to the image db!");
                 }
 
                 var allLogosInDir = Directory.GetFiles(_imagesFolder,"*.png");                                  
@@ -344,6 +348,12 @@ namespace PrivatePhilipsChannelEditor
                 DetailView.Items.Add($"{affectedCounter} affected in DB!");
                 dbConn.Close();
             }
+        }
+
+        private void ShowInformation_Click(object sender, RoutedEventArgs e)
+        {
+            var infoString = "Private Philips Channel Editor.\n\nVersion 0.0.1\n\nFree to use :)";
+            System.Windows.MessageBox.Show(infoString);
         }
     }
 }
